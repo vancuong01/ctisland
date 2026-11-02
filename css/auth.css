@@ -1,0 +1,147 @@
+/* ==========================================================================
+   CTISLAND - Auth Stylesheet (login.html & register.html)
+   ========================================================================== */
+
+.auth-page {
+  min-height: calc(100vh - 86px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 18px 42px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 470px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 2px solid #f3e6da;
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-header-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 10px;
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 0.94rem;
+  color: var(--text-sub);
+}
+
+.auth-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--pink-600);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+/* Bộ chọn nhân vật dễ thương khi đăng ký */
+.character-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.char-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.char-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.char-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: var(--radius-md);
+  border: 2px solid #efe3d8;
+  background: var(--bg-cream);
+  transition: transform 0.16s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.char-tile img {
+  width: 48px;
+  height: 48px;
+}
+
+.char-tile span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-sub);
+}
+
+.char-option input:checked + .char-tile {
+  border-color: var(--pink-400);
+  background: var(--bg-pink-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(255, 143, 171, 0.2);
+}
+
+.char-option input:checked + .char-tile span {
+  color: var(--pink-600);
+}
+
+.char-option input:focus-visible + .char-tile {
+  outline: 3px solid rgba(255, 143, 171, 0.4);
+}
+
+.auth-footer {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1.5px dashed #eee0d3;
+  text-align: center;
+  font-size: 0.94rem;
+  color: var(--text-sub);
+}
+
+.auth-footer a {
+  font-weight: 800;
+}
+
+@media (max-width: 460px) {
+  .auth-card {
+    padding: 24px 18px;
+  }
+
+  .character-picker {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

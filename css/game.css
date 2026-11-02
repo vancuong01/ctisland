@@ -1,0 +1,1469 @@
+/* ==========================================================================
+   CTISLAND - Multi-Map 2D, Shop, Garden (54 Ô), House & Pet Playground (game.css)
+   Tương thích mượt trên cả Máy tính (PC) và Điện thoại (Portrait & Landscape)
+   ========================================================================== */
+
+.game-shell {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 10px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.modal-card.modal-wide {
+  max-width: 660px;
+}
+
+.pink-strong {
+  color: var(--pink-600);
+}
+
+/* ==========================================================================
+   Thanh HUD trên cùng
+   ========================================================================== */
+.game-topbar {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  border: 2px solid #f2e5d9;
+  border-radius: var(--radius-lg);
+  padding: 9px 16px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.topbar-left .brand-logo {
+  font-size: 1.18rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-left .brand-logo img {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.btn-icon-soft {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #ede0d1;
+  background: var(--bg-cream-warm);
+  color: var(--text-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.88rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.btn-icon-soft:hover {
+  border-color: var(--pink-400);
+  transform: scale(1.06);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.partner-online-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: var(--mint-100);
+  border: 1.5px solid var(--mint-200);
+  color: var(--mint-700);
+  border-radius: var(--radius-pill);
+  font-size: 0.81rem;
+  font-weight: 800;
+}
+
+.online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mint-600);
+}
+
+.love-points-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--pink-100);
+  border: 1.5px solid var(--pink-200);
+  color: var(--pink-600);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.love-points-pill:hover {
+  background: var(--pink-200);
+  transform: translateY(-1px);
+}
+
+.love-points-pill img {
+  width: 20px;
+  height: 20px;
+}
+
+.quest-hud-btn {
+  position: relative;
+}
+
+.notify-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--pink-500);
+  color: var(--white);
+  font-size: 0.74rem;
+  font-weight: 800;
+  border: 1.5px solid var(--white);
+}
+
+.user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px 4px 6px;
+  background: var(--bg-cream-warm);
+  border: 1.5px solid #ede0d1;
+  border-radius: var(--radius-pill);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.user-pill img {
+  width: 25px;
+  height: 25px;
+}
+
+.logout-icon {
+  display: none;
+}
+
+/* ==========================================================================
+   Thanh Chuyển Map Nhanh (5 Bản Đồ Riêng)
+   ========================================================================== */
+.island-viewport-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.map-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 3px 2px;
+}
+
+.map-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.map-nav-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.8px solid #eadbce;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-sub);
+  font-family: var(--font-body);
+  font-size: 0.87rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.map-nav-pill:hover {
+  border-color: var(--pink-400);
+  color: var(--pink-600);
+  background: var(--bg-pink-soft);
+}
+
+.map-nav-pill.active {
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
+  border-color: transparent;
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(242, 106, 141, 0.3);
+}
+
+/* ==========================================================================
+   Khung Bản Đồ 2D CTISLAND
+   ========================================================================== */
+.canvas-frame {
+  position: relative;
+  width: 100%;
+  background: #cfeff5;
+  border: 3px solid #ffffff;
+  outline: 2px solid #ebdfd3;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  line-height: 0;
+}
+
+#islandCanvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 960 / 560;
+  display: block;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.canvas-cam-btn {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 253, 248, 0.92);
+  backdrop-filter: blur(4px);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Thanh Công Cụ Theo Từng Khu Vực (Vườn / Nhà / Thú cưng / Cửa hàng)
+   ========================================================================== */
+.context-toolbar {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #f0e2d5;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-soft);
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbar-between {
+  justify-content: space-between;
+}
+
+.toolbar-label {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.toolbar-hint {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+/* Chọn hạt giống ở Khu Vườn */
+.seed-pill-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.seed-pill-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.seed-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  border: 1.8px solid #e6d7c8;
+  background: var(--bg-cream);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seed-pill:hover {
+  border-color: var(--mint-400);
+}
+
+.seed-pill.active {
+  background: var(--mint-100);
+  border-color: var(--mint-600);
+  color: var(--mint-700);
+}
+
+.seed-pill.empty-stock {
+  opacity: 0.72;
+}
+
+.seed-count-tag {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+}
+
+.btn-edit-active {
+  background: var(--pink-100) !important;
+  border-color: var(--pink-500) !important;
+  color: var(--pink-600) !important;
+}
+
+/* Thanh trạng thái dưới bản đồ */
+.island-bottom-bar {
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid #f2e5d9;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: var(--shadow-soft);
+}
+
+.zone-indicator-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zone-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-mint-soft);
+  border: 1.5px solid var(--mint-200);
+  color: var(--mint-700);
+  font-size: 0.87rem;
+  font-weight: 800;
+}
+
+.zone-badge.active-zone {
+  background: var(--pink-100);
+  border-color: var(--pink-200);
+  color: var(--pink-600);
+}
+
+.controls-hint {
+  font-size: 0.83rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   Điều Khiển Cảm Ứng Điện Thoại: Cần gạt Joystick 360° + Nút Tương Tác
+   ========================================================================== */
+.mobile-controls {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 4px 4px 0;
+}
+
+.joystick-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.joystick-base {
+  position: relative;
+  width: 106px;
+  height: 106px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2.5px solid #eadbce;
+  box-shadow: var(--shadow-soft);
+  touch-action: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.joystick-knob {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
+  border: 2.5px solid var(--white);
+  box-shadow: 0 4px 10px rgba(242, 106, 141, 0.35);
+  pointer-events: none;
+  transition: transform 0.05s linear;
+}
+
+.joystick-hint {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.mobile-right-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  max-width: 235px;
+}
+
+.mobile-action-btn {
+  min-height: 50px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Tabs & Lưới Vật Phẩm (Cửa Hàng & Túi Đồ Nhà Chung)
+   ========================================================================== */
+.panel-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.quest-date-sub {
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+.modal-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-cream-warm);
+  padding: 5px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid #ede0d1;
+  margin-bottom: 15px;
+}
+
+.modal-tabs.modal-tabs-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.modal-tabs.modal-tabs-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.modal-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+  text-align: center;
+}
+
+.modal-tab.active {
+  background: var(--white);
+  color: var(--pink-600);
+  box-shadow: 0 3px 10px rgba(114, 92, 78, 0.08);
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 11px;
+  max-height: 410px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  background: var(--bg-cream);
+  border: 1.8px solid #eee1d4;
+}
+
+.catalog-card.owned-active {
+  background: #f5fbf7;
+  border-color: var(--mint-400);
+}
+
+.catalog-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.catalog-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 1.5px solid #efe2d5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.catalog-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.catalog-name {
+  font-weight: 800;
+  font-size: 0.94rem;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.catalog-desc {
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  line-height: 1.38;
+}
+
+.catalog-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.price-tag {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--pink-100);
+  color: var(--pink-600);
+}
+
+.owned-tag {
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--mint-100);
+  color: var(--mint-700);
+}
+
+.catalog-btn-row {
+  display: flex;
+  gap: 7px;
+}
+
+.catalog-btn-row .btn {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+}
+
+/* ==========================================================================
+   Nâng Cấp Ngôi Nhà Chung (Cấp 1 -> Cấp 4)
+   ========================================================================== */
+.upgrade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 410px;
+  overflow-y: auto;
+}
+
+.upgrade-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-cream);
+  border: 1.8px solid #ede0d2;
+}
+
+.upgrade-card.current-level {
+  background: #f5fbf7;
+  border-color: var(--mint-400);
+}
+
+.upgrade-card.next-level {
+  background: #fff6f9;
+  border-color: var(--pink-300, #ffb3c6);
+}
+
+.upgrade-specs {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  margin-top: 3px;
+}
+
+/* ==========================================================================
+   Khu Thú Cưng: Chọn Bé, Thanh Chỉ Số Live & Form Nhận Nuôi
+   ========================================================================== */
+.pet-selector-pills {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.pet-selector-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.pet-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  border: 1.8px solid #eadbce;
+  background: var(--bg-cream);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.pet-pill.active {
+  background: var(--pink-100);
+  border-color: var(--pink-500);
+  color: var(--pink-600);
+}
+
+.pet-detail-card {
+  background: var(--bg-cream);
+  border: 2px solid #efe2d5;
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.pet-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pet-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pet-avatar-big {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: var(--white);
+  border: 2px solid var(--pink-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+}
+
+.pet-mood-pill {
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  border: 1.5px solid #ebd9c8;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--pink-600);
+}
+
+.pet-rename-inline {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pet-stats-box {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.pet-stat-row {
+  display: grid;
+  grid-template-columns: 112px 1fr 42px;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.pet-stat-bar {
+  height: 10px;
+  background: #ece0d5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pet-stat-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.pet-stat-fill.hunger {
+  background: linear-gradient(90deg, #f4a261, #e76f51);
+}
+
+.pet-stat-fill.happiness {
+  background: linear-gradient(90deg, var(--pink-400), var(--pink-600));
+}
+
+.pet-stat-fill.energy {
+  background: linear-gradient(90deg, var(--mint-400), var(--mint-600));
+}
+
+.pet-care-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.pet-care-grid .btn {
+  padding: 9px 8px;
+  font-size: 0.83rem;
+}
+
+.adopt-cost-banner {
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-mint-soft);
+  border: 1.5px solid var(--mint-200);
+  color: var(--mint-700);
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+}
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.species-card {
+  border: 2px solid #eadbce;
+  background: var(--bg-cream);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.15s ease;
+}
+
+.species-card.selected {
+  background: var(--pink-100);
+  border-color: var(--pink-500);
+}
+
+.species-emoji {
+  font-size: 1.9rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.species-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   Giao diện Modal Nhiệm Vụ Hằng Ngày & Lịch Sử Điểm
+   ========================================================================== */
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  max-height: 410px;
+  overflow-y: auto;
+}
+
+.quest-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-cream);
+  border: 1.8px solid #eee1d4;
+}
+
+.quest-item-card.ready-claim {
+  background: #fff6f9;
+  border-color: var(--pink-200);
+}
+
+.quest-item-card.claimed {
+  background: #f5fbf7;
+  border-color: var(--mint-200);
+  opacity: 0.88;
+}
+
+.quest-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.quest-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 3px;
+}
+
+.quest-title {
+  font-weight: 800;
+  font-size: 0.96rem;
+  color: var(--text-main);
+}
+
+.quest-reward-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--pink-100);
+  color: var(--pink-600);
+}
+
+.quest-desc {
+  font-size: 0.83rem;
+  color: var(--text-sub);
+  margin-bottom: 7px;
+}
+
+.quest-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quest-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #ece0d5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mint-400), var(--mint-600));
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.quest-progress-text {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  min-width: 34px;
+}
+
+.quest-action {
+  flex-shrink: 0;
+}
+
+.claimed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--mint-100);
+  color: var(--mint-700);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+/* Tab Lịch sử điểm */
+.history-balance-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--pink-100);
+  color: var(--pink-600);
+  font-size: 0.94rem;
+  margin-bottom: 12px;
+}
+
+.history-balance-banner strong {
+  font-size: 1.12rem;
+}
+
+.tx-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.tx-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-cream);
+  border: 1.5px solid #eee1d4;
+}
+
+.tx-title {
+  font-weight: 800;
+  font-size: 0.91rem;
+}
+
+.tx-meta {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+}
+
+.tx-amount {
+  font-weight: 800;
+  font-size: 0.97rem;
+  white-space: nowrap;
+}
+
+.tx-amount.earn {
+  color: var(--mint-700);
+}
+
+.tx-amount.spend {
+  color: var(--pink-600);
+}
+
+.empty-state-box {
+  text-align: center;
+  padding: 26px 14px;
+  color: var(--text-sub);
+  font-size: 0.92rem;
+}
+
+/* ==========================================================================
+   Giai đoạn 3: Đếm Ngày Yêu, Chat Bong Bóng, Phụ Kiện Thú & Sổ Lưu Bút Kỷ Niệm
+   ========================================================================== */
+.love-days-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, #fff0f5, #ffe5ec);
+  border: 1.5px solid var(--pink-200);
+  color: var(--pink-600);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.love-days-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(242, 106, 141, 0.18);
+}
+
+.couple-interact-bar {
+  background: rgba(255, 255, 255, 0.94);
+  border: 2px solid #f2e5d9;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-soft);
+}
+
+.emote-quick-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.emote-quick-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.6px solid #f0dfd1;
+  background: var(--bg-cream);
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.emote-quick-btn:hover {
+  transform: scale(1.12);
+  border-color: var(--pink-400);
+  background: var(--pink-100);
+}
+
+.chat-inline-form {
+  flex: 1;
+  min-width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.chat-inline-input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  border: 1.6px solid #e8d9cb;
+  background: var(--bg-cream);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.chat-inline-input:focus {
+  border-color: var(--pink-400);
+  background: var(--white);
+}
+
+.streak-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #fff5eb, #ffe8d6);
+  border: 1.5px solid #f3d5b5;
+  color: #9c4a1a;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.streak-banner strong {
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.tx-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.tx-filter-pill {
+  border: 1.5px solid #e8d8c8;
+  background: var(--bg-cream);
+  color: var(--text-sub);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  font-family: var(--font-body);
+  font-size: 0.81rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tx-filter-pill.active {
+  background: var(--pink-100);
+  border-color: var(--pink-400);
+  color: var(--pink-600);
+}
+
+.pet-accessory-box {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1.5px dashed #eadacf;
+}
+
+.pet-accessory-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pet-acc-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pet-acc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  border: 1.6px solid #e7d8ca;
+  background: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pet-acc-pill.equipped {
+  background: var(--pink-100);
+  border-color: var(--pink-500);
+  color: var(--pink-600);
+}
+
+.memory-love-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #fff0f5, #fef6e4);
+  border: 1.8px solid var(--pink-200);
+  margin-bottom: 14px;
+}
+
+.love-counter-big {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--pink-600);
+  margin-bottom: 2px;
+}
+
+.love-date-inline-form {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.date-compact-input {
+  width: auto;
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.mood-pill-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.mood-pill-btn {
+  padding: 9px 8px;
+  border-radius: var(--radius-md);
+  border: 1.8px solid #eadbce;
+  background: var(--bg-cream);
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  font-weight: 800;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.mood-pill-btn.selected {
+  background: var(--pink-100);
+  border-color: var(--pink-500);
+  color: var(--pink-600);
+}
+
+.memory-textarea {
+  resize: vertical;
+  min-height: 92px;
+  line-height: 1.45;
+}
+
+.memory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.memory-card {
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  border: 1.8px solid #eee0d3;
+  background: var(--bg-cream);
+}
+
+.memory-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.memory-card-title {
+  font-weight: 800;
+  font-size: 0.96rem;
+  color: var(--text-main);
+}
+
+.memory-card-body {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.48;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 8px;
+}
+
+.memory-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Tối ưu hiển thị chuyên sâu cho Điện thoại & Máy tính bảng
+   ========================================================================== */
+@media (max-width: 820px), (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+  }
+
+  .controls-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 719px) {
+  .game-shell {
+    padding: 8px 10px calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .game-topbar {
+    padding: 8px 11px;
+    gap: 6px;
+    border-radius: 18px;
+  }
+
+  .topbar-left .brand-logo {
+    font-size: 1.04rem;
+    max-width: 132px;
+  }
+
+  .topbar-left .brand-logo img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .hud-btn-label,
+  .user-pill-name,
+  .logout-text {
+    display: none;
+  }
+
+  .logout-icon {
+    display: inline;
+  }
+
+  .user-pill {
+    padding: 4px;
+  }
+
+  #islandCanvas {
+    aspect-ratio: auto;
+    height: clamp(290px, 47dvh, 420px);
+  }
+
+  .canvas-cam-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .context-toolbar {
+    padding: 9px 11px;
+  }
+
+  .island-bottom-bar {
+    padding: 8px 12px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-tabs.modal-tabs-4 {
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 16px;
+  }
+
+  .mood-pill-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .couple-interact-bar {
+    padding: 8px 10px;
+    gap: 7px;
+  }
+
+  .emote-quick-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .love-days-pill {
+    padding: 5px 9px;
+    font-size: 0.78rem;
+  }
+
+  .pet-care-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quest-item-card,
+  .upgrade-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quest-action .btn,
+  .quest-action .claimed-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  #islandCanvas {
+    aspect-ratio: auto;
+    height: 56dvh;
+  }
+
+  .joystick-base {
+    width: 88px;
+    height: 88px;
+  }
+
+  .joystick-knob {
+    width: 36px;
+    height: 36px;
+  }
+}

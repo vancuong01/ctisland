@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Đảo CTISLAND — Thế Giới 2D Đa Bản Đồ</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/logo-island.svg">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/game.css">
+</head>
+<body>
+  <!-- Màn hình tải ngắn khi khởi tạo đảo -->
+  <div id="loadingScreen" class="loading-screen" aria-live="polite">
+    <img src="./assets/icons/logo-island.svg" alt="Đang tải CTISLAND">
+    <h2>Đang bước lên đảo...</h2>
+    <div class="loading-dots" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div id="gameRoot" class="game-shell">
+    <!-- Thanh HUD trên cùng (tự thu gọn thông minh trên điện thoại) -->
+    <header class="game-topbar">
+      <div class="topbar-left">
+        <a href="./index.html" class="brand-logo">
+          <img src="./assets/icons/logo-island.svg" alt="CTISLAND">
+          <span id="worldNameHeading">Đảo nhà Thùy</span>
+        </a>
+        <button type="button" id="openRenameModalBtn" class="btn-icon-soft" title="Đổi tên hòn đảo">
+          ✏️
+        </button>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Chỉ xuất hiện khi cả 2 cùng đang online -->
+        <div id="partnerOnlineBadge" class="partner-online-pill hidden">
+          <span class="online-dot"></span>
+          <span id="partnerOnlineText">Đang cùng trên đảo</span>
+        </div>
+
+        <!-- Đếm ngày yêu & Sổ lưu bút kỷ niệm -->
+        <button type="button" id="openMemoryModalBtn" class="love-days-pill" title="Đếm ngày yêu & Sổ lưu bút kỷ niệm">
+          <span>💑</span>
+          <span id="loveDaysBadgeText">Kỷ niệm</span>
+        </button>
+
+        <!-- Huy hiệu Điểm yêu thương (Bấm vào để xem Lịch sử cộng/trừ điểm) -->
+        <button type="button" id="lovePointsPill" class="love-points-pill hidden" title="Bấm để xem lịch sử Điểm yêu thương">
+          <img src="./assets/icons/heart-coin.svg" alt="Điểm yêu thương">
+          <span id="lovePointsValue">0</span>
+        </button>
+
+        <!-- Tủ đồ trang phục nhân vật -->
+        <button type="button" id="openWardrobeModalBtn" class="btn btn-outline btn-sm" title="Thay trang phục & phụ kiện tóc">
+          <span>👗</span>
+          <span class="hud-btn-label">Tủ đồ</span>
+        </button>
+
+        <!-- Mở nhanh Cửa Hàng -->
+        <button type="button" id="openShopQuickBtn" class="btn btn-outline btn-sm">
+          <span>🏪</span>
+          <span class="hud-btn-label">Cửa hàng</span>
+        </button>
+
+        <!-- Nút mở Bảng Nhiệm Vụ Hằng Ngày (kèm chấm thông báo khi có thưởng chưa nhận) -->
+        <button type="button" id="openQuestModalBtn" class="btn btn-mint btn-sm quest-hud-btn">
+          <span>📋</span>
+          <span class="hud-btn-label">Nhiệm vụ</span>
+          <span id="questClaimBadge" class="notify-badge hidden">0</span>
+        </button>
+
+        <!-- Nhân vật hiện tại -->
+        <div class="user-pill">
+          <img id="topbarUserAvatar" src="./assets/characters/char-mint.svg" alt="Nhân vật">
+          <span id="topbarUserName" class="user-pill-name">...</span>
+        </div>
+
+        <button type="button" id="logoutBtn" class="btn btn-outline btn-sm">
+          <span class="logout-icon">🚪</span>
+          <span class="logout-text">Thoát</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="fileProtocolAlert" class="config-alert hidden">
+      <strong>🌐 Chạy qua Live Server hoặc GitHub Pages!</strong>
+      Vui lòng mở trang qua giao thức <code>http://</code> hoặc <code>https://</code>.
+    </div>
+    <div id="firebaseSetupAlert" class="config-alert hidden"></div>
+
+    <!-- ======================================================================
+         HỆ THỐNG ĐA BẢN ĐỒ 2D (5 KHU RIÊNG BIỆT CHO PC & ĐIỆN THOẠI)
+         ====================================================================== -->
+    <main id="worldConnectedSection" class="island-viewport-wrapper hidden">
+      <!-- Thanh chuyển Map nhanh (có thể đi bộ qua cổng hoặc bấm chọn trực tiếp) -->
+      <nav id="mapNavBar" class="map-nav-bar" aria-label="Chuyển khu vực bản đồ">
+        <button type="button" class="map-nav-pill active" data-switch-map="island">
+          <span>🏝️</span> Đảo Chính
+        </button>
+        <button type="button" class="map-nav-pill" data-switch-map="house">
+          <span>🏡</span> Khu Nhà Chung
+        </button>
+        <button type="button" class="map-nav-pill" data-switch-map="garden">
+          <span>🌻</span> Khu Vườn
+        </button>
+        <button type="button" class="map-nav-pill" data-switch-map="pet">
+          <span>🐾</span> Khu Thú Cưng
+        </button>
+        <button type="button" class="map-nav-pill" data-switch-map="shop">
+          <span>🏪</span> Cửa Hàng
+        </button>
+      </nav>
+
+      <!-- Khung Canvas 2D -->
+      <div class="canvas-frame">
+        <canvas id="islandCanvas" width="960" height="560" aria-label="Bản đồ 2D hòn đảo CTISLAND"></canvas>
+
+        <!-- Nút đổi góc nhìn Cận cảnh / Toàn cảnh trên Điện thoại -->
+        <button type="button" id="mobileCamToggleBtn" class="canvas-cam-btn" title="Đổi góc nhìn bản đồ">
+          🔍 Toàn cảnh
+        </button>
+      </div>
+
+      <!-- 1. Thanh công cụ riêng khi ở KHU VƯỜN (6 -> 54 ô đất) -->
+      <section id="gardenToolbar" class="context-toolbar hidden" aria-label="Công cụ Khu vườn">
+        <div class="toolbar-row">
+          <span class="toolbar-label">🌱 Chọn hạt gieo:</span>
+          <div id="gardenSeedBar" class="seed-pill-bar"></div>
+        </div>
+        <div class="toolbar-row toolbar-between">
+          <span id="gardenPlotSummary" class="toolbar-hint">
+            🌻 Đã mở 6/54 ô đất • Chạm ô trống để gieo, ô đang lớn để tưới 💧, ô chín để thu hoạch!
+          </span>
+          <button type="button" id="unlockGardenPlotBtn" class="btn btn-primary btn-sm">
+            🔓 Mở ô đất #7 (15 ❤️)
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. Thanh công cụ riêng khi ở KHU NHÀ CHUNG (Trang trí & Nâng cấp nhà) -->
+      <section id="houseToolbar" class="context-toolbar hidden" aria-label="Công cụ Nhà chung">
+        <div class="toolbar-row toolbar-between">
+          <span id="houseLevelSummary" class="toolbar-hint">
+            🏡 Cấp 1: Nhà Gỗ Nhỏ Xinh (0/8 món)
+          </span>
+          <div class="toolbar-actions">
+            <button type="button" id="openHouseDecorBtn" class="btn btn-primary btn-sm">
+              🛋️ Kho Đồ & Tường/Sàn
+            </button>
+            <button type="button" id="toggleHouseEditBtn" class="btn btn-outline btn-sm">
+              ✋ Kéo sắp xếp: Tắt
+            </button>
+            <button type="button" id="removeSelectedFurnitureBtn" class="btn btn-outline btn-sm hidden">
+              📥 Cất món đang chọn
+            </button>
+            <button type="button" id="openHouseUpgradeBtn" class="btn btn-mint btn-sm">
+              ⬆️ Nâng cấp nhà
+            </button>
+            <button type="button" id="tidyHouseQuickBtn" class="btn btn-outline btn-sm">
+              🧹 Dọn nhà
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Thanh công cụ riêng khi ở KHU THÚ CƯNG (Tối đa 10 bé) -->
+      <section id="petToolbar" class="context-toolbar hidden" aria-label="Công cụ Khu thú cưng">
+        <div class="toolbar-row toolbar-between">
+          <span id="petCountSummary" class="toolbar-hint">
+            🐾 Sân chơi: 0/10 bé thú cưng • Chạm trực tiếp vào thú cưng trên sân để chơi đùa!
+          </span>
+          <div class="toolbar-actions">
+            <button type="button" id="openPetCareModalBtn" class="btn btn-primary btn-sm">
+              💖 Chăm sóc đàn thú
+            </button>
+            <button type="button" id="openPetAdoptModalBtn" class="btn btn-mint btn-sm">
+              ➕ Đón thú cưng mới
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Thanh công cụ riêng khi ở CỬA HÀNG -->
+      <section id="shopToolbar" class="context-toolbar hidden" aria-label="Công cụ Cửa hàng">
+        <div class="toolbar-row toolbar-between">
+          <span class="toolbar-hint">
+            🏪 Tiệm Tạp Hóa CTISLAND • Hạt giống, Nội thất, Đồ đôi & Phụ kiện thú cưng
+          </span>
+          <button type="button" id="openShopModalBtn" class="btn btn-primary btn-sm">
+            🛍️ Xem Vật Phẩm & Đồ Đôi
+          </button>
+        </div>
+      </section>
+
+      <!-- Thanh Tương Tác Đôi Lứa Trực Tiếp (Thả biểu cảm & Bong bóng chat trên đầu nhân vật) -->
+      <section class="couple-interact-bar" aria-label="Tương tác biểu cảm và trò chuyện">
+        <div id="quickEmoteBar" class="emote-quick-group" role="group" aria-label="Thả biểu cảm nhanh">
+          <button type="button" class="emote-quick-btn" data-send-emote="💖" title="Thả tim">💖</button>
+          <button type="button" class="emote-quick-btn" data-send-emote="🤗" title="Ôm ấm áp">🤗</button>
+          <button type="button" class="emote-quick-btn" data-send-emote="😘" title="Hôn gió">😘</button>
+          <button type="button" class="emote-quick-btn" data-send-emote="🌸" title="Tặng hoa">🌸</button>
+          <button type="button" class="emote-quick-btn" data-send-emote="🎉" title="Tung hoa ăn mừng">🎉</button>
+        </div>
+
+        <form id="quickChatForm" class="chat-inline-form" autocomplete="off">
+          <input
+            type="text"
+            id="quickChatInput"
+            class="chat-inline-input"
+            maxlength="60"
+            placeholder="Nhắn lời yêu thương hiện lên đầu nhân vật..."
+          >
+          <button type="submit" id="quickChatSendBtn" class="btn btn-primary btn-sm">
+            💬 Gửi
+          </button>
+        </form>
+      </section>
+
+      <!-- Thanh trạng thái vị trí & tương tác cổng khu vực -->
+      <div class="island-bottom-bar">
+        <div class="zone-indicator-group">
+          <span id="zoneStatusBadge" class="zone-badge">🏝️ Đang ở: Đảo Chính</span>
+          <button type="button" id="interactZoneBtn" class="btn btn-primary btn-sm hidden">
+            ✨ Vào khu vực (Phím E)
+          </button>
+        </div>
+
+        <div id="controlsHintText" class="controls-hint">
+          💻 <strong>WASD / Mũi tên</strong> đi bộ • <strong>Phím E</strong> qua cổng • Hoặc <strong>Click trực tiếp</strong> lên bản đồ
+        </div>
+      </div>
+
+      <!-- Bộ điều khiển cảm ứng chuyên dụng cho Điện thoại (Joystick 360° + Nút Tương tác lớn) -->
+      <div class="mobile-controls" aria-label="Điều khiển cảm ứng trên điện thoại">
+        <div class="joystick-wrap">
+          <div id="joystickZone" class="joystick-base">
+            <div id="joystickKnob" class="joystick-knob"></div>
+          </div>
+          <span class="joystick-hint">Kéo để đi bộ</span>
+        </div>
+
+        <div class="mobile-right-actions">
+          <button type="button" id="mobileQuestQuickBtn" class="btn btn-outline btn-sm">
+            📋 Nhiệm vụ hôm nay
+          </button>
+          <button type="button" id="mobileInteractBtn" class="btn btn-primary mobile-action-btn" disabled>
+            ✨ Lại gần cổng để vào khu
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1: CỬA HÀNG ĐẢO (VẬT PHẨM TRANG TRÍ & HẠT GIỐNG)
+       ======================================================================== -->
+  <div id="shopModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="shopModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="shopModalTitle" class="modal-title" style="margin-bottom:2px">🏪 Cửa Hàng CTISLAND</h3>
+          <p class="quest-date-sub">
+            Quỹ Điểm Yêu Thương hiện có: <strong class="pink-strong"><span id="shopBalanceValue">0</span> ❤️</strong>
+          </p>
+        </div>
+        <button type="button" id="closeShopModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs modal-tabs-4" role="tablist">
+        <button type="button" id="shopTabSeeds" class="modal-tab active" data-shop-tab="seeds">
+          🌱 Hạt giống
+        </button>
+        <button type="button" id="shopTabFurniture" class="modal-tab" data-shop-tab="furniture">
+          🛋️ Nội thất
+        </button>
+        <button type="button" id="shopTabSurfaces" class="modal-tab" data-shop-tab="surfaces">
+          🎨 Tường & Sàn
+        </button>
+        <button type="button" id="shopTabWardrobe" class="modal-tab" data-shop-tab="wardrobe">
+          👗 Đồ đôi & Thú
+        </button>
+      </div>
+
+      <div id="shopItemsGrid" class="catalog-grid"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: KHU NHÀ CHUNG (TRANG TRÍ NỘI THẤT, TƯỜNG/SÀN & NÂNG CẤP NHÀ)
+       ======================================================================== -->
+  <div id="houseModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="houseModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="houseModalTitle" class="modal-title" style="margin-bottom:2px">🏡 Tổ Ấm Chung Của Hai Đứa</h3>
+          <p id="houseModalSubtitle" class="quest-date-sub">
+            Cấp 1 • Quỹ điểm: <strong class="pink-strong"><span id="houseBalanceValue">0</span> ❤️</strong>
+          </p>
+        </div>
+        <button type="button" id="closeHouseModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs modal-tabs-3" role="tablist">
+        <button type="button" id="houseTabFurniture" class="modal-tab active" data-house-tab="furniture">
+          🛋️ Đặt Nội Thất
+        </button>
+        <button type="button" id="houseTabSurfaces" class="modal-tab" data-house-tab="surfaces">
+          🎨 Tường & Sàn
+        </button>
+        <button type="button" id="houseTabUpgrade" class="modal-tab" data-house-tab="upgrade">
+          ⬆️ Nâng Cấp Nhà
+        </button>
+      </div>
+
+      <div id="housePanelFurniture">
+        <div id="houseFurnitureBagList" class="catalog-grid"></div>
+      </div>
+
+      <div id="housePanelSurfaces" class="hidden">
+        <div id="houseSurfacesList" class="catalog-grid"></div>
+      </div>
+
+      <div id="housePanelUpgrade" class="hidden">
+        <div id="houseUpgradeContainer" class="upgrade-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: KHU THÚ CƯNG (VUI CHƠI & NHẬN NUÔI TỐI ĐA 10 CON)
+       ======================================================================== -->
+  <div id="petModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="petModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="petModalTitle" class="modal-title" style="margin-bottom:2px">🐾 Khu Vui Chơi Thú Cưng</h3>
+          <p class="quest-date-sub">
+            <span id="petModalSubtitle">Đang nuôi 0/10 bé</span> • Quỹ điểm: <strong class="pink-strong"><span id="petBalanceValue">0</span> ❤️</strong>
+          </p>
+        </div>
+        <button type="button" id="closePetModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" id="petTabCare" class="modal-tab active" data-pet-tab="care">
+          💖 Vui chơi & Chăm sóc
+        </button>
+        <button type="button" id="petTabAdopt" class="modal-tab" data-pet-tab="adopt">
+          ➕ Đón thú cưng mới
+        </button>
+      </div>
+
+      <!-- Tab 1: Danh sách đàn thú & Bảng chăm sóc chi tiết -->
+      <div id="petPanelCare">
+        <div id="petSelectorList" class="pet-selector-pills"></div>
+        <div id="petDetailContainer"></div>
+      </div>
+
+      <!-- Tab 2: Nhận nuôi thú cưng mới (Mèo, Chó, Thỏ - Tối đa 10 bé) -->
+      <div id="petPanelAdopt" class="hidden">
+        <form id="adoptPetForm" novalidate>
+          <div id="adoptCostNotice" class="adopt-cost-banner">
+            🎁 <strong>Ưu đãi hòn đảo:</strong> Bé thú cưng đầu tiên hoàn toàn <strong>MIỄN PHÍ (0 ❤️)</strong>!
+          </div>
+
+          <label class="form-label">1. Chọn loài thú cưng dễ thương</label>
+          <div id="adoptSpeciesGrid" class="species-grid"></div>
+
+          <div class="form-group" style="margin-top:14px">
+            <label class="form-label" for="adoptPetNameInput">2. Đặt tên cho bé (1–18 ký tự)</label>
+            <input
+              type="text"
+              id="adoptPetNameInput"
+              class="form-input"
+              maxlength="18"
+              placeholder="VD: Mochi, Bơ, Mây..."
+              required
+            >
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" id="adoptPetSubmitBtn" class="btn btn-primary" style="width:100%">
+              🐾 Đón bé về sân chơi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 4: NHIỆM VỤ HẰNG NGÀY (UTC+7) & LỊCH SỬ ĐIỂM YÊU THƯƠNG
+       ======================================================================== -->
+  <div id="questModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="questModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="questModalTitle" class="modal-title" style="margin-bottom:2px">📋 Sổ Tay Hòn Đảo</h3>
+          <p id="questDateSubtitle" class="quest-date-sub">Làm mới lúc 00:00 hằng ngày (Giờ Việt Nam UTC+7)</p>
+        </div>
+        <button type="button" id="closeQuestModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" id="tabBtnQuests" class="modal-tab active" role="tab" aria-selected="true">
+          📋 Nhiệm vụ hằng ngày
+        </button>
+        <button type="button" id="tabBtnHistory" class="modal-tab" role="tab" aria-selected="false">
+          📜 Lịch sử điểm
+        </button>
+      </div>
+
+      <div id="tabPanelQuests">
+        <div class="streak-banner">
+          <span>🔥 Chuỗi ngày lên đảo liên tiếp:</span>
+          <strong><span id="questStreakValue">1</span> ngày</strong>
+        </div>
+        <div id="questListContainer" class="quest-list"></div>
+      </div>
+
+      <div id="tabPanelHistory" class="hidden">
+        <div class="history-balance-banner">
+          <span>Quỹ Điểm Yêu Thương hiện tại:</span>
+          <strong><span id="historyBalanceValue">0</span> ❤️</strong>
+        </div>
+        <div id="txFilterBar" class="tx-filter-bar" role="group" aria-label="Lọc lịch sử giao dịch">
+          <button type="button" class="tx-filter-pill active" data-tx-filter="all">Tất cả</button>
+          <button type="button" class="tx-filter-pill" data-tx-filter="earn">➕ Cộng điểm</button>
+          <button type="button" class="tx-filter-pill" data-tx-filter="spend">➖ Tiêu điểm</button>
+        </div>
+        <div id="txHistoryContainer" class="tx-history-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 5: TỦ ĐỒ NHÂN VẬT (TRANG PHỤC ĐÔI & PHỤ KIỆN TÓC)
+       ======================================================================== -->
+  <div id="wardrobeModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="wardrobeModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="wardrobeModalTitle" class="modal-title" style="margin-bottom:2px">👗 Tủ Đồ Nhân Vật</h3>
+          <p class="quest-date-sub">
+            Mở khóa 1 lần dùng chung cho cả hai • Quỹ điểm: <strong class="pink-strong"><span id="wardrobeBalanceValue">0</span> ❤️</strong>
+          </p>
+        </div>
+        <button type="button" id="closeWardrobeModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" id="wardrobeTabOutfit" class="modal-tab active" data-wardrobe-tab="outfit">
+          👕 Trang phục đôi
+        </button>
+        <button type="button" id="wardrobeTabHat" class="modal-tab" data-wardrobe-tab="hat">
+          👑 Nón & Cài tóc
+        </button>
+      </div>
+
+      <div id="wardrobeItemsGrid" class="catalog-grid"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 6: CÂY KỶ NIỆM & SỔ LƯU BÚT ĐÔI (ĐẾM NGÀY YÊU)
+       ======================================================================== -->
+  <div id="memoryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="memoryModalTitle">
+    <div class="modal-card modal-wide">
+      <div class="panel-modal-header">
+        <div>
+          <h3 id="memoryModalTitle" class="modal-title" style="margin-bottom:2px">💌 Cây Kỷ Niệm & Lưu Bút Đôi</h3>
+          <p class="quest-date-sub">Nơi lưu giữ ngày yêu và những lời nhắn ngọt ngào của hai đứa</p>
+        </div>
+        <button type="button" id="closeMemoryModalBtn" class="btn-icon-soft" aria-label="Đóng">✕</button>
+      </div>
+
+      <!-- Khung Đếm Ngày Yêu Chung -->
+      <div class="memory-love-banner">
+        <div>
+          <div id="memoryLoveDaysTitle" class="love-counter-big">💑 Chọn ngày bắt đầu yêu nhau nhé!</div>
+          <div id="memoryLoveDateSub" class="tx-meta">Cả hai sẽ cùng nhìn thấy cột mốc này trên thanh đảo</div>
+        </div>
+        <form id="loveDateForm" class="love-date-inline-form">
+          <input type="date" id="loveStartDateInput" class="form-input date-compact-input" aria-label="Ngày bắt đầu yêu">
+          <button type="submit" id="saveLoveDateBtn" class="btn btn-mint btn-sm">💾 Lưu ngày</button>
+        </form>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" id="memoryTabList" class="modal-tab active" data-memory-tab="list">
+          📖 Sổ lưu bút kỷ niệm
+        </button>
+        <button type="button" id="memoryTabWrite" class="modal-tab" data-memory-tab="write">
+          ✍️ Viết lời nhắn mới
+        </button>
+      </div>
+
+      <div id="memoryPanelList">
+        <div id="memoryListContainer" class="memory-list"></div>
+      </div>
+
+      <div id="memoryPanelWrite" class="hidden">
+        <form id="createMemoryForm" novalidate>
+          <div class="form-group">
+            <label class="form-label">1. Cảm xúc của kỷ niệm</label>
+            <div id="memoryMoodBar" class="mood-pill-bar"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="memoryTitleInput">2. Tiêu đề ngắn (2–60 ký tự)</label>
+            <input
+              type="text"
+              id="memoryTitleInput"
+              class="form-input"
+              maxlength="60"
+              placeholder="VD: Ngày đầu tiên dọn về đảo chung..."
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="memoryContentInput">3. Lời nhắn gửi người thương (2–400 ký tự)</label>
+            <textarea
+              id="memoryContentInput"
+              class="form-input memory-textarea"
+              rows="4"
+              maxlength="400"
+              placeholder="Viết những điều dễ thương bạn muốn lưu giữ lại trên Cây Kỷ Niệm..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" id="memorySubmitBtn" class="btn btn-primary" style="width:100%">
+              💌 Treo lên Cây Kỷ Niệm
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 5: ĐỔI TÊN HÒN ĐẢO
+       ======================================================================== -->
+  <div id="renameWorldModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="renameModalTitle">
+    <div class="modal-card">
+      <h3 id="renameModalTitle" class="modal-title">🏡 Đổi tên hòn đảo</h3>
+      <p class="modal-body" style="margin-bottom:14px">
+        Đặt tên cho hòn đảo nhỏ của hai bạn:
+      </p>
+      <form id="renameWorldForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="renameWorldInput">Tên đảo</label>
+          <input
+            type="text"
+            id="renameWorldInput"
+            class="form-input"
+            minlength="2"
+            maxlength="30"
+            required
+          >
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="closeRenameModalBtn" class="btn btn-outline">Hủy</button>
+          <button type="submit" id="renameSubmitBtn" class="btn btn-mint">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('fileProtocolAlert').classList.remove('hidden');
+    }
+  </script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Nhập — CTISLAND</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/logo-island.svg">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="./index.html" class="brand-logo">
+      <img src="./assets/icons/logo-island.svg" alt="Biểu tượng CTISLAND">
+      <span>CTISLAND</span>
+    </a>
+    <a href="./register.html" class="btn btn-outline btn-sm">Đăng ký</a>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-card">
+      <div id="fileProtocolAlert" class="config-alert hidden">
+        <strong>🌐 Chạy qua Live Server hoặc GitHub Pages!</strong>
+        Vui lòng mở trang qua giao thức <code>http://</code> hoặc <code>https://</code> để hệ thống đăng nhập hoạt động.
+      </div>
+      <div id="firebaseSetupAlert" class="config-alert hidden"></div>
+
+      <div class="auth-header">
+        <img class="auth-header-icon" src="./assets/icons/logo-island.svg" alt="CTISLAND">
+        <h1 class="auth-title">Chào mừng trở lại đảo!</h1>
+        <p class="auth-subtitle">Đăng nhập tài khoản riêng của bạn để gặp người thương nhé</p>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Địa chỉ Email</label>
+          <input
+            type="email"
+            id="loginEmail"
+            class="form-input"
+            placeholder="vidu@email.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <div class="auth-row-between">
+            <label class="form-label" for="loginPassword" style="margin-bottom:0">Mật khẩu</label>
+            <button type="button" id="forgotPasswordBtn" class="link-button">Quên mật khẩu?</button>
+          </div>
+          <input
+            type="password"
+            id="loginPassword"
+            class="form-input"
+            placeholder="Nhập mật khẩu của bạn"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-block" style="margin-top:8px">
+          🏝️ Đăng nhập vào đảo
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Chưa có tài khoản trên CTISLAND?
+        <a href="./register.html">Tạo tài khoản ngay</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Hộp thoại Quên mật khẩu (không tải lại trang) -->
+  <div id="resetPasswordModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="modal-card">
+      <h3 id="resetModalTitle" class="modal-title">💌 Khôi phục mật khẩu</h3>
+      <p class="modal-body" style="margin-bottom:14px">
+        Nhập địa chỉ email bạn đã đăng ký. CTISLAND sẽ gửi đường dẫn đặt lại mật khẩu tới hộp thư của bạn.
+      </p>
+      <form id="resetPasswordForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="resetEmailInput">Email tài khoản</label>
+          <input
+            type="email"
+            id="resetEmailInput"
+            class="form-input"
+            placeholder="vidu@email.com"
+            required
+          >
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="closeResetModalBtn" class="btn btn-outline">Đóng</button>
+          <button type="submit" id="resetSubmitBtn" class="btn btn-primary">Gửi email khôi phục</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('fileProtocolAlert').classList.remove('hidden');
+    }
+  </script>
+  <script type="module" src="./js/auth.js"></script>
+</body>
+</html>
+

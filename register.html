@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký Tài Khoản — CTISLAND</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/logo-island.svg">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="./index.html" class="brand-logo">
+      <img src="./assets/icons/logo-island.svg" alt="Biểu tượng CTISLAND">
+      <span>CTISLAND</span>
+    </a>
+    <a href="./login.html" class="btn btn-outline btn-sm">Đăng nhập</a>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-card">
+      <div id="fileProtocolAlert" class="config-alert hidden">
+        <strong>🌐 Chạy qua Live Server hoặc GitHub Pages!</strong>
+        Vui lòng mở trang qua giao thức <code>http://</code> hoặc <code>https://</code> để hệ thống đăng ký hoạt động.
+      </div>
+      <div id="firebaseSetupAlert" class="config-alert hidden"></div>
+
+      <div class="auth-header">
+        <img class="auth-header-icon" src="./assets/icons/logo-island.svg" alt="CTISLAND">
+        <h1 class="auth-title">Tạo hồ sơ cư dân đảo</h1>
+        <p class="auth-subtitle">Đăng ký xong là vào thẳng hòn đảo chung của hai bạn ngay lập tức</p>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="regDisplayName">Tên gọi đáng yêu của bạn</label>
+          <input
+            type="text"
+            id="regDisplayName"
+            class="form-input"
+            placeholder="VD: Minh Nắng, Linh Mây..."
+            minlength="2"
+            maxlength="24"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Địa chỉ Email</label>
+          <input
+            type="email"
+            id="regEmail"
+            class="form-input"
+            placeholder="vidu@email.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Mật khẩu (tối thiểu 6 ký tự)</label>
+          <input
+            type="password"
+            id="regPassword"
+            class="form-input"
+            placeholder="Nhập mật khẩu"
+            minlength="6"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regConfirmPassword">Nhập lại mật khẩu</label>
+          <input
+            type="password"
+            id="regConfirmPassword"
+            class="form-input"
+            placeholder="Nhập lại mật khẩu ở trên"
+            minlength="6"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <span class="form-label">Chọn nhân vật 2D của bạn</span>
+          <div class="character-picker" role="radiogroup" aria-label="Chọn nhân vật 2D">
+            <label class="char-option">
+              <input type="radio" name="characterStyle" value="mint" checked>
+              <span class="char-tile">
+                <img src="./assets/characters/char-mint.svg" alt="Mầm Xanh">
+                <span>Mầm Xanh</span>
+              </span>
+            </label>
+            <label class="char-option">
+              <input type="radio" name="characterStyle" value="peach">
+              <span class="char-tile">
+                <img src="./assets/characters/char-peach.svg" alt="Đào Hồng">
+                <span>Đào Hồng</span>
+              </span>
+            </label>
+            <label class="char-option">
+              <input type="radio" name="characterStyle" value="butter">
+              <span class="char-tile">
+                <img src="./assets/characters/char-butter.svg" alt="Kem Bơ">
+                <span>Kem Bơ</span>
+              </span>
+            </label>
+            <label class="char-option">
+              <input type="radio" name="characterStyle" value="lavender">
+              <span class="char-tile">
+                <img src="./assets/characters/char-lavender.svg" alt="Mây Tím">
+                <span>Mây Tím</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" id="registerSubmitBtn" class="btn btn-mint btn-block" style="margin-top:8px">
+          🌱 Đăng ký &amp; Tiến vào đảo
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Đã có tài khoản rồi?
+        <a href="./login.html">Đăng nhập tại đây</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('fileProtocolAlert').classList.remove('hidden');
+    }
+  </script>
+  <script type="module" src="./js/auth.js"></script>
+</body>
+</html>
+

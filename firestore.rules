@@ -1,0 +1,255 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isIslandOwner() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/worlds/ctisland_main)
+        && request.auth.uid in get(/databases/$(database)/documents/worlds/ctisland_main).data.memberIds;
+    }
+
+    // Mức thưởng chuẩn của 7 nhiệm vụ hằng ngày
+    function isValidQuestReward(questId, amount) {
+      return (questId == 'daily_login' && amount == 15)
+        || (questId == 'water_plants' && amount == 20)
+        || (questId == 'harvest_crops' && amount == 25)
+        || (questId == 'care_pet_zone' && amount == 20)
+        || (questId == 'tidy_house' && amount == 15)
+        || (questId == 'couple_moment' && amount == 20)
+        || (questId == 'island_harmony' && (amount == 35 || amount == 30));
+    }
+
+    function isQuestInitUnclaimed(items, key) {
+      return !(key in items) || items[key].claimed == false;
+    }
+
+    function isQuestClaimPreserved(oldItems, newItems, key) {
+      return !(key in oldItems)
+        || oldItems[key].claimed != true
+        || (key in newItems && newItems[key].claimed == true);
+    }
+
+    // Mức thưởng chuẩn khi thu hoạch 5 loại cây trồng trong Khu vườn
+    function isValidHarvestReward(amount) {
+      return amount in [12, 26, 54, 96, 175];
+    }
+
+    // Kiểm tra giới hạn hợp lệ của Khu vườn (tối đa 54 ô), Nhà chung (Cấp 1-4) và Thú cưng (tối đa 10 con)
+    function isValidWorldSubsystems(data) {
+      return (!('garden' in data) || (data.garden.unlockedCount is number && data.garden.unlockedCount >= 6 && data.garden.unlockedCount <= 54))
+        && (!('house' in data) || (data.house.level is number && data.house.level >= 1 && data.house.level <= 4))
+        && (!('pets' in data) || (data.pets is list && data.pets.size() <= 10));
+    }
+
+    // 1. USERS: Hồ sơ người chơi
+    match /users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow list: if false;
+
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && !('password' in request.resource.data)
+        && request.resource.data.uid == userId
+        && isValidString(request.resource.data.displayName, 2, 24);
+
+      allow update: if isSignedIn()
+        && request.auth.uid == userId
+        && !('password' in request.resource.data)
+        && request.resource.data.uid == resource.data.uid
+        && isValidString(request.resource.data.displayName, 2, 24);
+
+      allow delete: if false;
+    }
+
+    // 2. WORLDS: Duy nhất 1 hòn đảo chung `ctisland_main` (tối đa 2 chủ nhân)
+    match /worlds/{worldId} {
+      allow list: if false;
+
+      allow get: if isSignedIn()
+        && worldId == 'ctisland_main'
+        && (
+          resource == null
+          || request.auth.uid in resource.data.memberIds
+          || resource.data.memberIds.size() < 2
+        );
+
+      allow create: if isSignedIn()
+        && worldId == 'ctisland_main'
+        && request.resource.data.worldId == 'ctisland_main'
+        && isValidString(request.resource.data.worldName, 2, 30)
+        && request.resource.data.lovePoints == 0
+        && request.resource.data.memberIds is list
+        && request.resource.data.memberIds.size() == 1
+        && request.resource.data.memberIds[0] == request.auth.uid
+        && isValidWorldSubsystems(request.resource.data);
+
+      allow update: if isSignedIn() && worldId == 'ctisland_main' && isValidWorldSubsystems(request.resource.data) && (
+        // Trường hợp A: Người thứ 2 (bạn gái) đăng nhập lần đầu -> tự vào chung đảo (khóa tối đa 2 người)
+        (
+          resource.data.memberIds.size() == 1
+          && !(request.auth.uid in resource.data.memberIds)
+          && request.resource.data.memberIds is list
+          && request.resource.data.memberIds.size() == 2
+          && request.resource.data.memberIds[0] == resource.data.memberIds[0]
+          && request.resource.data.memberIds[1] == request.auth.uid
+          && request.resource.data.worldId == resource.data.worldId
+          && request.resource.data.worldName == resource.data.worldName
+          && request.resource.data.lovePoints == resource.data.lovePoints
+        )
+        ||
+        // Trường hợp B: Di chuyển đa bản đồ, gieo hạt/tưới cây, trang trí nhà, chăm thú cưng, đổi tên đảo (giữ nguyên lovePoints)
+        (
+          request.auth.uid in resource.data.memberIds
+          && request.resource.data.memberIds == resource.data.memberIds
+          && request.resource.data.worldId == resource.data.worldId
+          && request.resource.data.lovePoints == resource.data.lovePoints
+          && isValidString(request.resource.data.worldName, 2, 30)
+        )
+        ||
+        // Trường hợp C: Cộng Điểm yêu thương (Nhận thưởng nhiệm vụ hoặc Thu hoạch cây chín) kèm giao dịch earn hợp lệ
+        (
+          request.auth.uid in resource.data.memberIds
+          && request.resource.data.memberIds == resource.data.memberIds
+          && request.resource.data.worldId == resource.data.worldId
+          && request.resource.data.worldName == resource.data.worldName
+          && request.resource.data.lovePoints > resource.data.lovePoints
+          && request.resource.data.lastTxId is string
+          && !exists(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId))
+          && getAfter(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId)).data.type == 'earn'
+          && (request.resource.data.lovePoints - resource.data.lovePoints) == getAfter(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId)).data.amount
+        )
+        ||
+        // Trường hợp D: Tiêu Điểm yêu thương (Mua đồ/hạt giống, Mở ô đất 7..54, Nâng cấp nhà, Nhận nuôi thú 2..10)
+        // Chặn tuyệt đối nếu không đủ điểm (lovePoints sau khi trừ phải >= 0)
+        (
+          request.auth.uid in resource.data.memberIds
+          && request.resource.data.memberIds == resource.data.memberIds
+          && request.resource.data.worldId == resource.data.worldId
+          && request.resource.data.worldName == resource.data.worldName
+          && request.resource.data.lovePoints is number
+          && request.resource.data.lovePoints >= 0
+          && request.resource.data.lovePoints < resource.data.lovePoints
+          && request.resource.data.lastTxId is string
+          && !exists(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId))
+          && getAfter(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId)).data.type == 'spend'
+          && (resource.data.lovePoints - request.resource.data.lovePoints) == getAfter(/databases/$(database)/documents/transactions/$(request.resource.data.lastTxId)).data.amount
+        )
+      );
+
+      allow delete: if false;
+    }
+
+    // 3. INVENTORY: Túi đồ chung (Hạt giống & Vật phẩm trang trí nhà)
+    match /inventory/{worldId} {
+      allow get: if worldId == 'ctisland_main' && isIslandOwner();
+      allow list: if false;
+
+      allow create: if worldId == 'ctisland_main'
+        && isIslandOwner()
+        && request.resource.data.worldId == 'ctisland_main';
+
+      allow update: if worldId == 'ctisland_main'
+        && isIslandOwner()
+        && (!('worldId' in resource.data) || request.resource.data.worldId == resource.data.worldId);
+
+      allow delete: if false;
+    }
+
+    // 4. QUESTS: Nhiệm vụ hằng ngày theo ngày Việt Nam UTC+7 (Chống nhận thưởng trùng)
+    match /quests/{questDocId} {
+      allow get: if isIslandOwner();
+      allow list: if false;
+
+      allow create: if isIslandOwner()
+        && request.resource.data.worldId == 'ctisland_main'
+        && isValidString(request.resource.data.dateKey, 10, 10)
+        && questDocId == ('ctisland_main_' + request.resource.data.dateKey)
+        && isQuestInitUnclaimed(request.resource.data.items, 'daily_login')
+        && isQuestInitUnclaimed(request.resource.data.items, 'water_plants')
+        && isQuestInitUnclaimed(request.resource.data.items, 'harvest_crops')
+        && isQuestInitUnclaimed(request.resource.data.items, 'care_pet_zone')
+        && isQuestInitUnclaimed(request.resource.data.items, 'tidy_house')
+        && isQuestInitUnclaimed(request.resource.data.items, 'couple_moment')
+        && isQuestInitUnclaimed(request.resource.data.items, 'island_harmony');
+
+      // Khi 1 nhiệm vụ đã claimed == true thì không bao giờ được sửa ngược về false
+      allow update: if isIslandOwner()
+        && request.resource.data.worldId == 'ctisland_main'
+        && request.resource.data.dateKey == resource.data.dateKey
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'daily_login')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'water_plants')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'harvest_crops')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'care_pet_zone')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'tidy_house')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'couple_moment')
+        && isQuestClaimPreserved(resource.data.items, request.resource.data.items, 'island_harmony');
+
+      allow delete: if false;
+    }
+
+    // 5. TRANSACTIONS: Lịch sử cộng / trừ điểm yêu thương (Bất biến, không cho sửa/xóa)
+    match /transactions/{txId} {
+      allow get, list: if isIslandOwner();
+
+      allow create: if isIslandOwner()
+        && request.resource.data.worldId == 'ctisland_main'
+        && request.resource.data.actorUid == request.auth.uid
+        && (
+          // A. Cộng điểm từ Nhiệm vụ hằng ngày (chống nhận trùng bằng txId cố định)
+          (
+            request.resource.data.type == 'earn'
+            && request.resource.data.source == 'quest'
+            && isValidString(request.resource.data.dateKey, 10, 10)
+            && request.resource.data.questDocId == ('ctisland_main_' + request.resource.data.dateKey)
+            && txId == ('claim_' + request.resource.data.dateKey + '_' + request.resource.data.questId)
+            && isValidQuestReward(request.resource.data.questId, request.resource.data.amount)
+            && getAfter(/databases/$(database)/documents/quests/$(request.resource.data.questDocId)).data.items[request.resource.data.questId].completed == true
+            && getAfter(/databases/$(database)/documents/quests/$(request.resource.data.questDocId)).data.items[request.resource.data.questId].claimed == true
+          )
+          ||
+          // B. Cộng điểm khi Thu hoạch cây chín tại Khu vườn
+          (
+            request.resource.data.type == 'earn'
+            && request.resource.data.source == 'harvest'
+            && isValidHarvestReward(request.resource.data.amount)
+            && request.resource.data.balanceAfter is number
+            && request.resource.data.balanceAfter >= request.resource.data.amount
+          )
+          ||
+          // C. Trừ điểm khi Mua đồ/hạt giống, Mở ô đất khu vườn, Nâng cấp nhà, hoặc Nhận nuôi thêm thú cưng
+          (
+            request.resource.data.type == 'spend'
+            && request.resource.data.source in ['shop', 'garden_unlock', 'house_upgrade', 'pet_adopt']
+            && request.resource.data.amount is number
+            && request.resource.data.amount > 0
+            && request.resource.data.balanceAfter is number
+            && request.resource.data.balanceAfter >= 0
+          )
+        );
+
+      allow update, delete: if false;
+    }
+
+    // 6. MEMORIES: Sổ lưu bút Kỷ niệm chung của hai người
+    match /memories/{memoryId} {
+      allow get, list: if isIslandOwner();
+
+      allow create: if isIslandOwner()
+        && request.resource.data.worldId == 'ctisland_main'
+        && request.resource.data.authorUid == request.auth.uid
+        && isValidString(request.resource.data.title, 2, 60)
+        && isValidString(request.resource.data.content, 2, 400);
+
+      allow delete: if isIslandOwner();
+      allow update: if false;
+    }
+  }
+}

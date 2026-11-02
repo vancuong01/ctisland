@@ -1,0 +1,724 @@
+/* ==========================================================================
+   CTISLAND - Main Stylesheet (Design System, Components, Modals & Toasts)
+   Phong cách: Pastel Cute (Xanh lá nhạt - Hồng phấn - Kem ấm)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Quicksand:wght@600;700&display=swap');
+
+:root {
+  /* Bảng màu Pastel chủ đạo */
+  --bg-cream: #fffdf8;
+  --bg-cream-warm: #fef9ef;
+  --bg-mint-soft: #eef9f2;
+  --bg-pink-soft: #fff2f6;
+
+  --mint-100: #d8f3dc;
+  --mint-200: #b7e4c7;
+  --mint-400: #74c69d;
+  --mint-600: #40916c;
+  --mint-700: #2d6a4f;
+
+  --pink-100: #ffe5ec;
+  --pink-200: #ffc2d1;
+  --pink-400: #ff8fab;
+  --pink-500: #f26a8d;
+  --pink-600: #d94d72;
+
+  --cream-200: #faedcd;
+  --cream-400: #e6ccb2;
+  --caramel-500: #c68b59;
+
+  /* Màu chữ ấm áp, dễ đọc */
+  --text-main: #4a3b32;
+  --text-sub: #7a685d;
+  --text-muted: #a39287;
+  --white: #ffffff;
+
+  /* Trạng thái */
+  --success-bg: #e3f9eb;
+  --success-border: #8ce0ad;
+  --success-text: #256d44;
+
+  --warning-bg: #fff8e1;
+  --warning-border: #ffd97d;
+  --warning-text: #8c5e14;
+
+  --danger-bg: #ffecef;
+  --danger-border: #ff9ebb;
+  --danger-text: #b83253;
+
+  /* Bo góc & Đổ bóng mềm */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 10px 30px rgba(114, 92, 78, 0.08);
+  --shadow-card: 0 14px 36px rgba(114, 92, 78, 0.1), 0 2px 6px rgba(114, 92, 78, 0.04);
+  --shadow-btn-pink: 0 6px 16px rgba(255, 143, 171, 0.35);
+  --shadow-btn-mint: 0 6px 16px rgba(116, 198, 157, 0.35);
+
+  --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Quicksand', 'Nunito', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background-color: var(--bg-cream);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 229, 236, 0.65) 0%, transparent 38%),
+    radial-gradient(circle at 88% 15%, rgba(216, 243, 220, 0.7) 0%, transparent 42%),
+    radial-gradient(circle at 50% 90%, rgba(250, 237, 205, 0.55) 0%, transparent 45%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-main);
+}
+
+a {
+  color: var(--pink-600);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--pink-500);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Thanh cảnh báo mạng / cấu hình ở đầu trang
+   ========================================================================== */
+.network-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: 700;
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-bottom: 2px solid var(--warning-border);
+  animation: fadeDown 0.25s ease;
+}
+
+.config-alert {
+  background: var(--warning-bg);
+  border: 2px dashed var(--warning-border);
+  color: var(--warning-text);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 0.94rem;
+}
+
+.config-alert strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.config-alert code {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 0.88rem;
+}
+
+/* ==========================================================================
+   Header & Navigation chung
+   ========================================================================== */
+.site-header {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.brand-logo img {
+  width: 42px;
+  height: 42px;
+  animation: gentleFloat 3.6s ease-in-out infinite;
+}
+
+.brand-badge {
+  font-size: 0.75rem;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--pink-100);
+  color: var(--pink-600);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Buttons (Nút bấm)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  border: 2px solid transparent;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1.5px) scale(0.99);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
+  color: var(--white);
+  box-shadow: var(--shadow-btn-pink);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+.btn-mint {
+  background: linear-gradient(135deg, var(--mint-400), var(--mint-600));
+  color: var(--white);
+  box-shadow: var(--shadow-btn-mint);
+}
+
+.btn-mint:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--mint-600), var(--mint-700));
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: var(--white);
+  color: var(--text-main);
+  border-color: var(--cream-400);
+  box-shadow: 0 3px 10px rgba(114, 92, 78, 0.05);
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--pink-400);
+  background: var(--bg-pink-soft);
+  color: var(--pink-600);
+}
+
+.btn-danger-soft {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.btn-danger-soft:hover:not(:disabled) {
+  background: #ffdce3;
+}
+
+.btn-sm {
+  padding: 8px 15px;
+  font-size: 0.88rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Vòng xoay tải trên nút bấm */
+.spinner-inline {
+  width: 17px;
+  height: 17px;
+  border: 2.5px solid rgba(255, 255, 255, 0.45);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ==========================================================================
+   Form Inputs
+   ========================================================================== */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 2px solid #efe3d8;
+  background: var(--white);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 600;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--pink-400);
+  box-shadow: 0 0 0 4px rgba(255, 143, 171, 0.16);
+}
+
+.form-hint {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  margin-top: 5px;
+}
+
+/* ==========================================================================
+   Trang chủ (index.html)
+   ========================================================================== */
+.landing-container {
+  max-width: 1040px;
+  margin: 12px auto 48px;
+  padding: 0 20px;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border: 2px solid #f4e8dd;
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--mint-100);
+  color: var(--mint-700);
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-size: clamp(1.9rem, 3.6vw, 2.65rem);
+  margin-bottom: 14px;
+  color: var(--text-main);
+}
+
+.hero-title span {
+  color: var(--pink-500);
+}
+
+.hero-desc {
+  font-size: 1.04rem;
+  color: var(--text-sub);
+  margin-bottom: 24px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-visual img.island-art {
+  width: 100%;
+  max-width: 360px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  animation: gentleFloat 4.5s ease-in-out infinite;
+}
+
+.couple-preview-strip {
+  margin-top: -22px;
+  background: var(--white);
+  border: 2px solid var(--pink-100);
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-soft);
+}
+
+.couple-preview-strip img {
+  width: 40px;
+  height: 40px;
+}
+
+.feature-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.feature-item {
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid #f2e7dc;
+  border-radius: var(--radius-md);
+  padding: 20px 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.feature-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.feature-icon.pink { background: var(--pink-100); }
+.feature-icon.mint { background: var(--mint-100); }
+.feature-icon.cream { background: var(--cream-200); }
+
+.feature-item h3 {
+  font-size: 1.02rem;
+  margin-bottom: 6px;
+}
+
+.feature-item p {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+}
+
+.site-footer {
+  text-align: center;
+  padding: 24px 16px 36px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+/* ==========================================================================
+   Loading Overlay toàn màn hình
+   ========================================================================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: var(--bg-cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-screen img {
+  width: 72px;
+  height: 72px;
+  animation: gentleFloat 1.8s ease-in-out infinite;
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.loading-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--pink-400);
+  animation: bounceDot 1.2s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(2) {
+  background: var(--mint-400);
+  animation-delay: 0.16s;
+}
+
+.loading-dots span:nth-child(3) {
+  background: var(--caramel-500);
+  animation-delay: 0.32s;
+}
+
+/* ==========================================================================
+   Toast Notifications (Thông báo góc màn hình)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 2px solid #efe3d8;
+  box-shadow: var(--shadow-card);
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: var(--text-main);
+  animation: slideInRight 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.toast.toast-success {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+  color: var(--success-text);
+}
+
+.toast.toast-error {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+  color: var(--danger-text);
+}
+
+.toast.toast-warning {
+  background: var(--warning-bg);
+  border-color: var(--warning-border);
+  color: var(--warning-text);
+}
+
+.toast-fadeout {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+/* ==========================================================================
+   Modal Xác nhận & Hộp thoại chung
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(74, 59, 50, 0.38);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  animation: fadeIn 0.18s ease;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 440px;
+  max-height: min(88dvh, 90vh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--white);
+  border: 2px solid #f3e5d8;
+  border-radius: var(--radius-lg);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-card);
+  animation: popIn 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.modal-card.modal-wide {
+  max-width: 580px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.modal-body {
+  font-size: 0.96rem;
+  color: var(--text-sub);
+  margin-bottom: 22px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Animations & Responsive
+   ========================================================================== */
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounceDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+    padding: 28px 22px;
+    text-align: center;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    padding: 14px 16px;
+  }
+
+  .brand-logo {
+    font-size: 1.22rem;
+  }
+
+  .form-input {
+    font-size: 16px; /* Ngăn iOS Safari tự phóng to khi bấm ô nhập liệu */
+  }
+
+  .toast-container {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+  }
+
+  .modal-backdrop {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    padding: 20px 16px;
+    border-radius: 22px;
+  }
+}
+
